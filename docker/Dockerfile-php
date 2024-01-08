@@ -1,0 +1,4 @@
+FROM php:7.4-fpm
+
+RUN apt-get update && docker-php-ext-install mysqli pdo_mysql 
+CMD cd /app && php sendMessagesPHP.php
