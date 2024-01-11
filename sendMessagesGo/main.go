@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
-	"strings"
 	"time"
 )
 
@@ -35,7 +34,7 @@ func main() {
 
 	// время конца проги в наносекундах
 	finishTime := time.Now().UnixNano()
-	fmt.Println(messagesNumber, "сообщений в обычном режиме Golang отправил за", getSecond(strconv.FormatInt(finishTime-startTime, 10)), "секунд")
+	fmt.Printf("%v сообщений в обычном режиме Golang отправил за %.9f секунд \n", messagesNumber, float64((float64(finishTime)-float64(startTime))/1000000000))
 
 	// ****ОТПРАВКА СООБЩЕНИЙ В МНОГОПОТОЧНОМ РЕЖИМЕ***
 	// время начала проги в наносекундах
@@ -51,33 +50,10 @@ func main() {
 
 	// время конца проги в наносекундах
 	finishTime = time.Now().UnixNano()
-	fmt.Println(messagesNumber, "сообщений в многопоточном режиме Golang отправил менее, чем за", getSecond(strconv.FormatInt(finishTime-startTime, 10)), "секунд")
-
+	fmt.Printf("%v сообщений в многопоточном режиме Golang отправил менее, чем за %.9f секунд", messagesNumber, float64((float64(finishTime)-float64(startTime))/1000000000))
 }
 
 // отправка сообщений
 func sendMessage(url string) {
 	http.Get(url)
-}
-
-// представим наносекунды в секунды для удобства чтения
-func getSecond(timeString string) string {
-	// посчитаем сколько символов в строке
-	countSymbols := len(timeString)
-	seconds := ""
-	switch {
-	case countSymbols == 9:
-		seconds = "0." + timeString
-	case countSymbols < 9:
-		nulls := ""
-		for i := 0; i < 9-countSymbols; i++ {
-			nulls += "0"
-		}
-		seconds = "0." + nulls + timeString
-	case countSymbols > 9:
-		intPart := strings.TrimSpace(timeString[0 : countSymbols-9])
-		floatPart := strings.TrimSpace(timeString[countSymbols-9 : countSymbols])
-		seconds = intPart + "." + floatPart
-	}
-	return seconds
 }
